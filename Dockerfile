@@ -1,10 +1,9 @@
 FROM adoptopenjdk/maven-openjdk11 as BUILD
-COPY pom.xml /usr/src/app
+
 COPY src /usr/src/app/src
-USER root
-RUN chown -R quarkus /usr/src/app
-USER quarkus
-RUN mvn -f /usr/src/app/pom.xml package
+COPY ./pom.xml /usr/src/app
+WORKDIR /usr/src/app
+RUN mvn package -Dquarkus.container-image.build=true
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 
