@@ -1,11 +1,12 @@
 FROM adoptopenjdk/maven-openjdk11 as BUILD
-
+COPY pom.xml /usr/src/app
 COPY src /usr/src/app/src
-COPY ./pom.xml /usr/src/app
-WORKDIR /usr/src/app
-RUN mvn package
+USER root
+RUN chown -R quarkus /usr/src/app
+USER quarkus
+RUN mvn -f /usr/src/app/pom.xml package
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
+FROM registry.access.redhat.com/ubi8/ubi-minimal
 
 ARG JAVA_PACKAGE=java-11-openjdk-headless
 ARG RUN_JAVA_VERSION=1.3.8
